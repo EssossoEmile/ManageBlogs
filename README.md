@@ -21,4 +21,12 @@ Note that there are three ways to build a Spring Boot project, for this project 
 - Using Spring Initializr interface inside Intellij IDEA;
 - Using Maven in Intellij and integrated the Spring boot dependency (create a Maven project and add Spring Boot dependency in the `pom.xml` file.
 
+### Some Postman tests
+![blog1](./src/main/resources/static/blog1.png)
+![blog2](./src/main/resources/static/blog2.png)
+![blog3](./src/main/resources/static/blog3.png)
+![blog4](./src/main/resources/static/blog4.png)
+![user1](./src/main/resources/static/user1.png)
+![user2](./src/main/resources/static/user2.png)
+
 
