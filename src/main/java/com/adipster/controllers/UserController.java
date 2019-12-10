@@ -1,8 +1,10 @@
 package com.adipster.controllers;
 
 import com.adipster.entities.User;
-import com.adipster.daoRespository.UserRespository;
+import com.adipster.service.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.*;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,49 +13,50 @@ import java.util.Map;
 @RestController
 public class UserController {
 
+    private IUserService iUserService;
+
     @Autowired
-    UserRespository userRespository;
+    public UserController(IUserService theIUserService) {
+        iUserService = theIUserService;
+    }
 
     @GetMapping("/user")
-    public List<User> index(){
-        return userRespository.findAll();
+    public ResponseEntity<List<User>> index(){
+        return new ResponseEntity<List<User>> (iUserService.findAllUsers(), HttpStatus.OK);
     }
 
     @GetMapping("/user/{id}")
     public User show(@PathVariable String id){
         int userId = Integer.parseInt(id);
-        return userRespository.findOne(userId);
+        return iUserService.findUserById(userId);
     }
 
     @PostMapping("/user")
-    public User create(@RequestBody Map<String, String> body) {
-        String name = body.get("name");
-        String email = body.get("email");
-
-        return userRespository.save(new User(name, email));
-
-    }
-
-    @PostMapping("/user/search")
-    public List<User> search(@RequestBody Map<String, String> body){
-        String searchTerm = body.get("text");
-        return userRespository.findByTitleContainingOrContentContaining(searchTerm, searchTerm);
+    @Transactional
+    public User create(@RequestBody User user) {
+        return iUserService.saveUser(user);
     }
 
     @PutMapping("/user/{id}")
-    public User update(@PathVariable String id, @RequestBody Map<String, String> body){
-        // Getting User
-        User user = userRespository.findOne(Integer.parseInt(id));
-        user.setName(body.get("name"));
-        user.setEmail(body.get("email"));
-        return userRespository.save(user);
+    @Transactional
+    public User update(@PathVariable String id, @RequestBody User theUser){
+        User user = iUserService.findUserById(theUser.getId());
+        if (user == null) {
+            throw new RuntimeException("The User to update doesn't exist");
+        }
+        return iUserService.saveUser(theUser);
     }
 
     @DeleteMapping("/user/{id}")
-    public boolean delete(@PathVariable String id){
+    @Transactional
+    public int delete(@PathVariable String id){
         int userId = Integer.parseInt(id);
-        userRespository.delete(userId);
-        return true;
+        User user = iUserService.findUserById(userId);
+        if (user == null) {
+            throw new RuntimeException("The User you want to delete doesn't exist");
+        }
+        iUserService.deleteUserById(userId);
+        return userId;
     }
 
 }

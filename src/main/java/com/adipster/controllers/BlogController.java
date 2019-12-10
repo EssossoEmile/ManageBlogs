@@ -1,8 +1,10 @@
 package com.adipster.controllers;
 
 import com.adipster.entities.Blog;
-import com.adipster.daoRespository.BlogRespository;
+import com.adipster.service.interfaces.IBlogService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.*;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,48 +13,57 @@ import java.util.Map;
 @RestController
 public class BlogController {
 
+    private IBlogService iBlogService;
+
     @Autowired
-    BlogRespository blogRespository;
+    public BlogController(IBlogService theIBlogService) {
+        iBlogService = theIBlogService;
+    }
 
     @GetMapping("/blog")
-    public List<Blog> index(){
-        return blogRespository.findAll();
+    public ResponseEntity<List<Blog>> index(){
+        return new ResponseEntity<List<Blog>> (iBlogService.findAllBlogs(), HttpStatus.OK);
     }
 
     @GetMapping("/blog/{id}")
     public Blog show(@PathVariable String id){
         int blogId = Integer.parseInt(id);
-        return blogRespository.findOne(blogId);
+        return iBlogService.findBlogById(blogId);
     }
 
     @PostMapping("/blog/search")
-    public List<Blog> search(@RequestBody Map<String, String> body){
-        String searchTerm = body.get("text");
-        return blogRespository.findByTitleContainingOrContentContaining(searchTerm, searchTerm);
+    public List<Blog> search(@RequestBody Blog blog){
+        String searchBlog = blog.getTitle();
+        return iBlogService.findByTitleContainingOrContentContaining(searchBlog);
     }
 
     @PostMapping("/blog")
-    public Blog create(@RequestBody Map<String, String> body){
-        String title = body.get("title");
-        String content = body.get("content");
-        return blogRespository.save(new Blog(title, content));
+    @Transactional
+    public Blog create(@RequestBody Blog blog){
+        return iBlogService.saveBlog(blog);
     }
 
     @PutMapping("/blog/{id}")
-    public Blog update(@PathVariable String id, @RequestBody Map<String, String> body){
-        int blogId = Integer.parseInt(id);
-        // Getting blog
-        Blog blog = blogRespository.findOne(blogId);
-        blog.setTitle(body.get("title"));
-        blog.setContent(body.get("content"));
-        return blogRespository.save(blog);
+    @Transactional
+    public Blog update(@RequestBody Blog theBlog){
+        Blog blog = iBlogService.findBlogById(theBlog.getId());
+        System.out.println("The blog value"+ blog);
+        if (blog == null) {
+            throw new RuntimeException("The Blog to update doesn't exist");
+        }
+        return iBlogService.saveBlog(theBlog);
     }
 
     @DeleteMapping("/blog/{id}")
-    public boolean delete(@PathVariable String id){
+    @Transactional
+    public int delete(@PathVariable String id){
         int blogId = Integer.parseInt(id);
-        blogRespository.delete(blogId);
-        return true;
+        Blog blog = iBlogService.findBlogById(blogId);
+        if (blog == null) {
+            throw new RuntimeException("The Blog you want to delete doesn't exist");
+        }
+        iBlogService.deleteBlogById(blogId);
+        return blogId;
     }
 
 
