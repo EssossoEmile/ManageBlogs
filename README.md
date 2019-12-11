@@ -14,11 +14,11 @@ Linux server.
 
 ### Installation
 Install Java and Jdk in the server. Also, install Intellij IDEA for web programmers.
-Clone the project in the project repository, unzippe and import in Intellij IDE.
+Clone the project in the project repository, unzip and import in Intellij IDE.
 
 Note that there are three ways to build a Spring Boot project, for this project I used the last one.
 - Using a command lines;
-- Using Spring Initializr interface inside Intellij IDEA;
+- Using Spring Initializer interface inside Intellij IDEA;
 - Using Maven in Intellij and integrated the Spring boot dependency (create a Maven project and add Spring Boot dependency in the `pom.xml` file.
 
 ### Some Postman tests
