@@ -1,12 +1,14 @@
 package com.adipster.entities;
 
 import javax.persistence.*;
+import java.util.*;
 
 @Entity
 @Table(name = "user")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
     private int id;
 
     @Column(name = "name")
@@ -15,10 +17,14 @@ public class User {
     @Column(name = "email")
     private String email;
 
+    @OneToMany(mappedBy="user")
+    private List<Blog> blogs = new ArrayList<>();
+
     public User() {
     }
 
-    public User(String name, String email) {
+    public User(int id, String name, String email) {
+        this.id = id;
         this.name = name;
         this.email = email;
     }
@@ -52,7 +58,7 @@ public class User {
         return "User{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
+                ", email='" + email +
                 '}';
     }
 }

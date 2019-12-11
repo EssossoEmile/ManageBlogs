@@ -15,12 +15,18 @@ public class Blog {
     @Column(name = "content")
     private String content;
 
+    @ManyToOne
+    @JoinColumn(name = "\"userid\"")
+    private User user;
+
     public Blog() {
     }
 
-    public Blog(String title, String content) {
-        this.setTitle(title);
-        this.setContent(content);
+    public Blog(int id, String title, String content, User user) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.user = user;
     }
 
     public int getId() {
@@ -47,12 +53,21 @@ public class Blog {
         this.content = content;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     @Override
     public String toString() {
         return "Blog{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
+                ", user=" + user +
                 '}';
     }
 }
