@@ -27,6 +27,7 @@ Note that there are three ways to build a Spring Boot project, for this project 
 ![blog33](./src/main/resources/static/blog33.png)
 ![blog44](./src/main/resources/static/blog44.png)
 ![blog55](./src/main/resources/static/blog55.png)
+![blog66](./src/main/resources/static/blog66.png)
 ![user1](./src/main/resources/static/user1.png)
 ![user2](./src/main/resources/static/user2.png)
 

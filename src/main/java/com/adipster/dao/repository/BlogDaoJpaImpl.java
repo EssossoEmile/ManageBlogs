@@ -35,8 +35,9 @@ public class BlogDaoJpaImpl implements IBlogDao {
 
     @Override
     public List<Blog> findByTitleContainingOrContentContaining(String text) {
-        Query query = (Query) entityManager.createQuery("select bl from Blog bl where match(bl.title, :blogTitle)", Blog.class);
-        query.setParameter("blogTitle", text);
+        Query query = (Query) entityManager.createQuery("from Blog where title like :blogTitle", Blog.class);
+        String pText = "%" + text + "%";
+        query.setParameter("blogTitle", pText);
         List<Blog> blogs = query.getResultList();
         return blogs;
     }
